@@ -13,16 +13,14 @@ int boxwidth = 50, boxheight = 50;
 int screenwidth = 720,
     screenheight = 720;
 
-float leftb   = 0,
-      rightb  = 0.1,
-      bottomb = 0,
-      topb   = 0.1;
+float leftb   = -1,
+      rightb  = -0.9,
+      bottomb = -1,
+      topb   = -0.9;
 
 
-float AnimateStep = 0.1f;
+float AnimateStep = 0.1;
 
-const double Xmin = 0.0, Xmax = 3.0;
-const double Ymin = 0.0, Ymax = 3.0;
 
 void myKeyboardFunc( unsigned char key, int x, int y )
 {
@@ -63,33 +61,33 @@ void drawScene(){
 	if (RunMode==1) {
 		leftb += AnimateStep;
      	rightb += AnimateStep;
-     	if ( rightb > 3) {
-			rightb = 0.1;
-			leftb = 0;
+     	if ( rightb > 1) {
+			rightb = -0.9;
+			leftb = -1;
 		}
 	}
 	if (RunMode==2) {
 		leftb -= AnimateStep;
       	rightb -= AnimateStep;
-      	if ( leftb < 0 ) {
-			leftb = 2.9;
-			rightb = 3.0;
+      	if ( leftb < -1 ) {
+			leftb = 0.9;
+			rightb = 1;
 		}
 	}
 	if (RunMode==3) {
 		topb += AnimateStep;
       	bottomb += AnimateStep;
-      	if(topb > 3){
-      		topb = 0.1;
-      		bottomb = 0;
+      	if(topb > 1){
+      		topb = -0.9;
+      		bottomb = -1;
       	}
 	}
 	if (RunMode==4) {
 		topb -= AnimateStep;
       	bottomb -= AnimateStep;
-      	if(bottomb < 0.0 ){
-      		topb = 3;
-      		bottomb = 2.9;
+      	if(bottomb < -1 ){
+      		topb = 1;
+      		bottomb = 0.9;
       	}
 	}
 	glMatrixMode( GL_MODELVIEW );
@@ -110,37 +108,6 @@ void drawScene(){
 	}
 
 }
-void resizeWindow(int w, int h)
-{
-	double scale, center;
-	double windowXmin, windowXmax, windowYmin, windowYmax;
-
-	glViewport( 0, 0, w, h );
-
-	w = (w==0) ? 1 : w;
-	h = (h==0) ? 1 : h;
-	if ( (Xmax-Xmin)/w < (Ymax-Ymin)/h ) {
-		scale = ((Ymax-Ymin)/h)/((Xmax-Xmin)/w);
-		center = (Xmax+Xmin)/2;
-		windowXmin = center - (center-Xmin)*scale;
-		windowXmax = center + (Xmax-center)*scale;
-		windowYmin = Ymin;
-		windowYmax = Ymax;
-	}
-	else {
-		scale = ((Xmax-Xmin)/w)/((Ymax-Ymin)/h);
-		center = (Ymax+Ymin)/2;
-		windowYmin = center - (center-Ymin)*scale;
-		windowYmax = center + (Ymax-center)*scale;
-		windowXmin = Xmin;
-		windowXmax = Xmax;
-	}
-	
-    glMatrixMode( GL_PROJECTION );
-    glLoadIdentity();
-    glOrtho( windowXmin, windowXmax, windowYmin, windowYmax, -1, 1 );
-
-}
 
 
 int main( int argc, char** argv )
@@ -157,8 +124,6 @@ int main( int argc, char** argv )
     initRendering();
 
    	glutKeyboardFunc( myKeyboardFunc );	
-
-   	glutReshapeFunc( resizeWindow );
 
    	glutDisplayFunc( drawScene );
 
