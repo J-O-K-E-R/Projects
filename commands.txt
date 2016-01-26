@@ -1,4 +1,4 @@
-g++ -o Hello.exe trial.cpp -lglu32 -lopengl32 -lfreeglut //open gl
-gcc -o myprogram myprogram.c `sdl2-config --cflags --libs` //sdl
+g++ filename.cpp -lglu32 -lopengl32 -lfreeglut //open gl
+g++ filename.cpp `sdl2-config --cflags --libs` //sdl
 
  
