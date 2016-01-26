@@ -27,20 +27,28 @@ const double Ymin = 0.0, Ymax = 3.0;
 void myKeyboardFunc( unsigned char key, int x, int y )
 {
 	switch ( key ) {
-	case 'a':
-		RunMode = 2;
-		drawScene();
-		cout << leftb << " , " << rightb << endl;
-		RunMode = 0;
-		break;
-	case 'd':
-		RunMode = 1;
-		drawScene();
-		cout << leftb << " , " << rightb << endl;
-		RunMode = 0;
-		break;
-	case 27:	// Escape key
-		exit(1);
+		case 'd':
+			RunMode = 1;
+			drawScene();
+			RunMode = 0;
+			break;
+		case 'a':
+			RunMode = 2;
+			drawScene();
+			RunMode = 0;
+			break;
+		case 'w':
+			RunMode = 3;
+			drawScene();
+			RunMode = 0;
+			break;
+		case 's':
+			RunMode = 4;
+			drawScene();
+			RunMode = 0;
+			break;
+		case 27:	// Escape key
+			exit(1);
 	}
 }
 
@@ -53,21 +61,36 @@ void initRendering()
 void drawScene(){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	if (RunMode==1) {
-		if ( rightb == 1 ) {
+		leftb += AnimateStep;
+     	rightb += AnimateStep;
+     	if ( rightb > 3) {
 			rightb = 0.1;
 			leftb = 0;
 		}
-        leftb += AnimateStep;
-        rightb += AnimateStep;
 	}
 	if (RunMode==2) {
-		if ( leftb == 0 ) {
-			leftb = 0.9;
-			rightb = 1.0;
-		} else {
-			leftb -= AnimateStep;
-      	    rightb -= AnimateStep;
+		leftb -= AnimateStep;
+      	rightb -= AnimateStep;
+      	if ( leftb < 0 ) {
+			leftb = 2.9;
+			rightb = 3.0;
 		}
+	}
+	if (RunMode==3) {
+		topb += AnimateStep;
+      	bottomb += AnimateStep;
+      	if(topb > 3){
+      		topb = 0.1;
+      		bottomb = 0;
+      	}
+	}
+	if (RunMode==4) {
+		topb -= AnimateStep;
+      	bottomb -= AnimateStep;
+      	if(bottomb < 0.0 ){
+      		topb = 3;
+      		bottomb = 2.9;
+      	}
 	}
 	glMatrixMode( GL_MODELVIEW );
 	glLoadIdentity();	
