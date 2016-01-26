@@ -1,22 +1,25 @@
+#include <iostream>
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
 #include <GL/glut.h>
 #include "SimpleAnim.h"
+using namespace std;
 
 int RunMode = 0;
-int boxleft = 100, boxbottom = 100;
-int boxwidth = 100, boxheight = 100;
+
+int boxleft = 50, boxbottom = 50;
+int boxwidth = 50, boxheight = 50;
 int screenwidth = 720,
     screenheight = 720;
 
-float left   = (float)boxleft / screenwidth,
-      right  = left + (float)boxwidth / screenwidth,
-      bottom = (float)boxbottom / screenheight,
-      top    = bottom + (float)boxheight / screenheight;
+float leftb   = 0,
+      rightb  = 0.1,
+      bottomb = 0,
+      topb   = 0.1;
 
 
-float AnimateStep = 0.1;
+float AnimateStep = 0.1f;
 
 const double Xmin = 0.0, Xmax = 3.0;
 const double Ymin = 0.0, Ymax = 3.0;
@@ -25,13 +28,15 @@ void myKeyboardFunc( unsigned char key, int x, int y )
 {
 	switch ( key ) {
 	case 'a':
-		RunMode = 1;
-		drawRScene();
+		RunMode = 2;
+		drawScene();
+		cout << leftb << " , " << rightb << endl;
 		RunMode = 0;
 		break;
 	case 'd':
 		RunMode = 1;
 		drawScene();
+		cout << leftb << " , " << rightb << endl;
 		RunMode = 0;
 		break;
 	case 27:	// Escape key
@@ -48,10 +53,20 @@ void initRendering()
 void drawScene(){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	if (RunMode==1) {
-        left += AnimateStep;
-        right += AnimateStep;
-		if ( right > 360.0 ) {
-			right -= 360.0;
+		if ( rightb == 1 ) {
+			rightb = 0.1;
+			leftb = 0;
+		}
+        leftb += AnimateStep;
+        rightb += AnimateStep;
+	}
+	if (RunMode==2) {
+		if ( leftb == 0 ) {
+			leftb = 0.9;
+			rightb = 1.0;
+		} else {
+			leftb -= AnimateStep;
+      	    rightb -= AnimateStep;
 		}
 	}
 	glMatrixMode( GL_MODELVIEW );
@@ -59,47 +74,19 @@ void drawScene(){
 
 	glBegin(GL_QUADS);
         glColor3f(1, 0, 0);
-        glVertex2f(left,  top);
-        glVertex2f(right, top);
-        glVertex2f(right, bottom);
-        glVertex2f(left,  bottom);
+        glVertex2f(leftb,  topb);
+        glVertex2f(rightb, topb);
+        glVertex2f(rightb, bottomb);
+        glVertex2f(leftb,  bottomb);
     glEnd();	
     glFlush();
     glutSwapBuffers();
 
-	if ( RunMode==1 ) {
+	if ( RunMode==1 || RunMode == 2 ) {
 		glutPostRedisplay();
 	}
 
 }
-void drawRScene(){
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	if (RunMode==1) {
-        left -= AnimateStep;
-        right -= AnimateStep;
-		if ( left > 360.0 ) {
-			left += 360.0;
-		}
-	}
-	glMatrixMode( GL_MODELVIEW );
-	glLoadIdentity();
-
-	glBegin(GL_QUADS);
-        glColor3f(1, 0, 0);
-        glVertex2f(left,  top);
-        glVertex2f(right, top);
-        glVertex2f(right, bottom);
-        glVertex2f(left,  bottom);
-    glEnd();
-    glFlush();
-    glutSwapBuffers();
-
-	if ( RunMode==1 ) {
-		glutPostRedisplay();
-	}
-}
-
 void resizeWindow(int w, int h)
 {
 	double scale, center;
